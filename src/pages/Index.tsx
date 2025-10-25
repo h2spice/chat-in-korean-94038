@@ -40,7 +40,7 @@ const Index = () => {
         {/* Header */}
         <div className="text-center space-y-2 animate-fade-in">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-            👑 Escape from the Tower of London 👑
+            👑 Halloween Party In the Tower of London 👑
           </h1>
           <p className="text-lg md:text-xl text-foreground/80">Queen Embralyn&apos;s Halloween Party Adventure</p>
         </div>
