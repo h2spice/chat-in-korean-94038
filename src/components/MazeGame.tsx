@@ -189,12 +189,7 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     setMaze(newMaze);
     setPlayerPos({ x: newX, y: newY });
     setMoves(prev => prev + 1);
-
-    // 플레이어가 움직인 후 좀비도 움직임
-    setTimeout(() => {
-      moveZombies();
-    }, 300);
-  }, [maze, playerPos, onLevelComplete, onGameOver, moveZombies]);
+  }, [maze, playerPos, onLevelComplete, onGameOver]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
