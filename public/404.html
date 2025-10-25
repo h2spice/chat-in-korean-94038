@@ -4,23 +4,32 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    // GitHub Pages SPA redirect solution
-    // This script takes the current URL and converts it to a query string
-    // that our index.html can use to redirect to the correct page
+    // GitHub Pages SPA redirect solution for /chat-in-korean-94038/
+    // This script redirects all 404 errors to the index.html with the path preserved
 
-    const pathSegmentsToKeep = 1; // For /chat-in-korean-94038/
+    (function() {
+      var pathSegmentsToKeep = 1; // For /chat-in-korean-94038/
+      var l = window.location;
 
-    const l = window.location;
-    const path = l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/';
+      // Split the pathname into segments
+      var pathSegments = l.pathname.split('/').filter(function(segment) {
+        return segment !== '';
+      });
 
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      path +
-      '?p=/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+      // Get the base path (e.g., /chat-in-korean-94038/)
+      var basePath = '/' + pathSegments.slice(0, pathSegmentsToKeep).join('/') + '/';
+
+      // Get the route path (everything after the base path)
+      var routePath = pathSegments.slice(pathSegmentsToKeep).join('/');
+
+      // Redirect to index.html with the route preserved as a query parameter
+      var redirect = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        basePath + '?p=/' + routePath +
+        (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash;
+
+      l.replace(redirect);
+    })();
   </script>
 </head>
 <body>
