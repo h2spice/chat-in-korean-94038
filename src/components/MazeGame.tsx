@@ -56,6 +56,7 @@ const levels = [
 const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
   const [maze, setMaze] = useState<CellType[][]>([]);
   const [playerPos, setPlayerPos] = useState<Position>({ x: 1, y: 1 });
+  const [zombiePositions, setZombiePositions] = useState<Position[]>([]);
   const [moves, setMoves] = useState(0);
 
   const initializeMaze = useCallback(() => {
@@ -63,17 +64,20 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     if (!levelData) return;
 
     const newMaze: CellType[][] = levelData.map(row => [...row] as CellType[]);
-    
-    // 플레이어 시작 위치 찾기
+    const zombies: Position[] = [];
+
+    // 플레이어 시작 위치와 좀비 위치 찾기
     for (let y = 0; y < newMaze.length; y++) {
       for (let x = 0; x < newMaze[y].length; x++) {
         if (newMaze[y][x] === "player") {
           setPlayerPos({ x, y });
-          break;
+        } else if (newMaze[y][x] === "zombie") {
+          zombies.push({ x, y });
         }
       }
     }
-    
+
+    setZombiePositions(zombies);
     setMaze(newMaze);
     setMoves(0);
   }, [level]);
@@ -81,6 +85,71 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
   useEffect(() => {
     initializeMaze();
   }, [initializeMaze]);
+
+  const moveZombies = useCallback(() => {
+    if (maze.length === 0 || zombiePositions.length === 0) return;
+
+    const newZombiePositions: Position[] = [];
+    const newMaze = maze.map(row => [...row]);
+
+    // 각 좀비를 플레이어 쪽으로 이동
+    zombiePositions.forEach(zombie => {
+      // 현재 좀비 위치를 비움
+      if (newMaze[zombie.y][zombie.x] === "zombie") {
+        newMaze[zombie.y][zombie.x] = "empty";
+      }
+
+      // 플레이어와의 거리 계산
+      const dx = playerPos.x - zombie.x;
+      const dy = playerPos.y - zombie.y;
+
+      // 이동할 방향 결정 (x 또는 y 중 더 가까운 쪽으로)
+      let newX = zombie.x;
+      let newY = zombie.y;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        // x축 우선
+        newX = zombie.x + Math.sign(dx);
+      } else if (Math.abs(dy) > 0) {
+        // y축 우선
+        newY = zombie.y + Math.sign(dy);
+      } else if (Math.abs(dx) > 0) {
+        // dx만 있는 경우
+        newX = zombie.x + Math.sign(dx);
+      }
+
+      // 이동 가능 여부 확인
+      const canMove = newY >= 0 && newY < maze.length &&
+                      newX >= 0 && newX < maze[0].length &&
+                      newMaze[newY][newX] !== "wall" &&
+                      newMaze[newY][newX] !== "cobweb" &&
+                      newMaze[newY][newX] !== "spider";
+
+      if (canMove) {
+        // 플레이어와 충돌했는지 확인
+        if (newX === playerPos.x && newY === playerPos.y) {
+          onGameOver();
+          return;
+        }
+        newZombiePositions.push({ x: newX, y: newY });
+      } else {
+        // 이동할 수 없으면 제자리
+        newZombiePositions.push({ x: zombie.x, y: zombie.y });
+      }
+    });
+
+    // 새 좀비 위치를 미로에 표시
+    newZombiePositions.forEach(zombie => {
+      if (newMaze[zombie.y][zombie.x] === "player") {
+        onGameOver();
+        return;
+      }
+      newMaze[zombie.y][zombie.x] = "zombie";
+    });
+
+    setZombiePositions(newZombiePositions);
+    setMaze(newMaze);
+  }, [maze, zombiePositions, playerPos, onGameOver]);
 
   const movePlayer = useCallback((dx: number, dy: number) => {
     if (maze.length === 0) return;
@@ -116,11 +185,16 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     const newMaze = maze.map(row => [...row]);
     newMaze[playerPos.y][playerPos.x] = "empty";
     newMaze[newY][newX] = "player";
-    
+
     setMaze(newMaze);
     setPlayerPos({ x: newX, y: newY });
     setMoves(prev => prev + 1);
-  }, [maze, playerPos, onLevelComplete, onGameOver]);
+
+    // 플레이어가 움직인 후 좀비도 움직임
+    setTimeout(() => {
+      moveZombies();
+    }, 300);
+  }, [maze, playerPos, onLevelComplete, onGameOver, moveZombies]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -147,6 +221,17 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [movePlayer]);
+
+  // 좀비가 주기적으로 움직임 (2초마다)
+  useEffect(() => {
+    if (zombiePositions.length === 0) return;
+
+    const zombieInterval = setInterval(() => {
+      moveZombies();
+    }, 2000);
+
+    return () => clearInterval(zombieInterval);
+  }, [zombiePositions.length, moveZombies]);
 
   const getCellEmoji = (cell: CellType): string => {
     switch (cell) {
