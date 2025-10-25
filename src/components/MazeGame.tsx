@@ -179,10 +179,10 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
 
   return (
     <div className="space-y-4">
-      {/* 이동 횟수 */}
+      {/* Move count */}
       <div className="text-center">
         <p className="text-lg text-foreground/80">
-          이동 횟수: <span className="font-bold text-primary">{moves}</span>
+          Move count: <span className="font-bold text-primary">{moves}</span>
         </p>
       </div>
 
@@ -212,19 +212,19 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
         </div>
       </div>
 
-      {/* 조작 안내 */}
+      {/* Controls guide */}
       <div className="text-center space-y-2 text-sm text-muted-foreground">
-        <p>⌨️ 화살표 키로 엠블린 왕비를 이동하세요</p>
+        <p>⌨️ Use arrow keys to move Queen Embralyn</p>
         <div className="flex justify-center gap-4 flex-wrap">
-          <span>👑 왕비</span>
-          <span>🧟 좀비 (피하기)</span>
-          <span>🕷️ 거미 (피하기)</span>
-          <span>🕸️ 거미줄 (통과 불가)</span>
-          <span>👻 파티 (목표)</span>
+          <span>👑 Queen</span>
+          <span>🧟 Zombie (avoid)</span>
+          <span>🕷️ Spider (avoid)</span>
+          <span>🕸️ Cobweb (impassable)</span>
+          <span>👻 Party (goal)</span>
         </div>
       </div>
 
-      {/* 모바일 컨트롤 */}
+      {/* Mobile controls */}
       <div className="flex justify-center">
         <div className="grid grid-cols-3 gap-2 w-48">
           <div />
