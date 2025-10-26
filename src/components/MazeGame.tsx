@@ -39,7 +39,7 @@ const levels = [
   // 레벨 3 - 어려운 미로 (복잡한 경로, 많은 적과 장애물)
   [
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "player", "empty", "cobweb", "empty", "empty", "spider", "empty", "empty", "empty", "empty", "wall"],
+    ["wall", "player", "empty", "empty", "empty", "empty", "spider", "empty", "empty", "empty", "empty", "wall"],
     ["wall", "empty", "wall", "wall", "wall", "empty", "wall", "wall", "wall", "wall", "empty", "wall"],
     ["wall", "empty", "empty", "empty", "zombie", "empty", "empty", "empty", "cobweb", "empty", "empty", "wall"],
     ["wall", "wall", "wall", "empty", "wall", "wall", "wall", "empty", "wall", "wall", "wall", "wall"],
