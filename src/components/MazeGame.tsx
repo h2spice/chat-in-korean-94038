@@ -39,16 +39,16 @@ const levels = [
   // 레벨 3 - 어려운 미로 (복잡한 경로, 많은 적과 장애물)
   [
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
-    ["wall", "player", "empty", "cobweb", "empty", "empty", "spider", "empty", "cobweb", "empty", "zombie", "wall"],
+    ["wall", "player", "empty", "cobweb", "empty", "empty", "spider", "empty", "empty", "empty", "empty", "wall"],
     ["wall", "empty", "wall", "wall", "wall", "empty", "wall", "wall", "wall", "wall", "empty", "wall"],
-    ["wall", "empty", "zombie", "empty", "zombie", "empty", "empty", "empty", "cobweb", "empty", "empty", "wall"],
+    ["wall", "empty", "empty", "empty", "zombie", "empty", "empty", "empty", "cobweb", "empty", "empty", "wall"],
     ["wall", "wall", "wall", "empty", "wall", "wall", "wall", "empty", "wall", "wall", "wall", "wall"],
-    ["wall", "spider", "empty", "empty", "empty", "cobweb", "empty", "zombie", "empty", "zombie", "empty", "wall"],
+    ["wall", "spider", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "zombie", "empty", "wall"],
     ["wall", "empty", "wall", "wall", "empty", "wall", "wall", "wall", "wall", "wall", "empty", "wall"],
-    ["wall", "zombie", "empty", "zombie", "empty", "empty", "empty", "cobweb", "empty", "empty", "empty", "wall"],
+    ["wall", "empty", "empty", "zombie", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "wall"],
     ["wall", "wall", "empty", "wall", "wall", "empty", "wall", "wall", "empty", "wall", "spider", "wall"],
-    ["wall", "cobweb", "empty", "empty", "spider", "empty", "zombie", "empty", "empty", "empty", "empty", "wall"],
-    ["wall", "empty", "wall", "empty", "wall", "wall", "empty", "wall", "wall", "zombie", "goal", "wall"],
+    ["wall", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "empty", "zombie", "empty", "wall"],
+    ["wall", "empty", "wall", "empty", "wall", "wall", "empty", "wall", "wall", "empty", "goal", "wall"],
     ["wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall", "wall"],
   ],
 ];
