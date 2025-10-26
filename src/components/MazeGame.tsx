@@ -92,53 +92,69 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     const newZombiePositions: Position[] = [];
     const newMaze = maze.map(row => [...row]);
 
-    // 각 좀비를 플레이어 쪽으로 이동
+    // Helper function to check if a position is valid for zombie movement
+    const isValidMove = (x: number, y: number): boolean => {
+      return y >= 0 && y < maze.length &&
+             x >= 0 && x < maze[0].length &&
+             newMaze[y][x] !== "wall" &&
+             newMaze[y][x] !== "cobweb" &&
+             newMaze[y][x] !== "spider";
+    };
+
+    // Move each zombie toward the player with improved pathfinding
     zombiePositions.forEach(zombie => {
-      // 현재 좀비 위치를 비움
+      // Clear current zombie position
       if (newMaze[zombie.y][zombie.x] === "zombie") {
         newMaze[zombie.y][zombie.x] = "empty";
       }
 
-      // 플레이어와의 거리 계산
+      // Calculate distance to player
       const dx = playerPos.x - zombie.x;
       const dy = playerPos.y - zombie.y;
 
-      // 이동할 방향 결정 (x 또는 y 중 더 가까운 쪽으로)
-      let newX = zombie.x;
-      let newY = zombie.y;
+      // Try different movement options in order of priority
+      const moves: Position[] = [];
 
+      // Primary moves: toward player on strongest axis
       if (Math.abs(dx) > Math.abs(dy)) {
-        // x축 우선
-        newX = zombie.x + Math.sign(dx);
+        // X-axis is priority
+        moves.push({ x: zombie.x + Math.sign(dx), y: zombie.y });
+        if (Math.abs(dy) > 0) moves.push({ x: zombie.x, y: zombie.y + Math.sign(dy) });
       } else if (Math.abs(dy) > 0) {
-        // y축 우선
-        newY = zombie.y + Math.sign(dy);
+        // Y-axis is priority
+        moves.push({ x: zombie.x, y: zombie.y + Math.sign(dy) });
+        if (Math.abs(dx) > 0) moves.push({ x: zombie.x + Math.sign(dx), y: zombie.y });
       } else if (Math.abs(dx) > 0) {
-        // dx만 있는 경우
-        newX = zombie.x + Math.sign(dx);
+        moves.push({ x: zombie.x + Math.sign(dx), y: zombie.y });
       }
 
-      // 이동 가능 여부 확인
-      const canMove = newY >= 0 && newY < maze.length &&
-                      newX >= 0 && newX < maze[0].length &&
-                      newMaze[newY][newX] !== "wall" &&
-                      newMaze[newY][newX] !== "cobweb" &&
-                      newMaze[newY][newX] !== "spider";
+      // Diagonal moves as backup
+      if (Math.abs(dx) > 0 && Math.abs(dy) > 0) {
+        moves.push({ x: zombie.x + Math.sign(dx), y: zombie.y + Math.sign(dy) });
+      }
 
-      if (canMove) {
-        // 플레이어와 충돌했는지 확인
-        if (newX === playerPos.x && newY === playerPos.y) {
-          onGameOver();
-          return;
+      // Try each move option
+      let moved = false;
+      for (const move of moves) {
+        if (isValidMove(move.x, move.y)) {
+          // Check if zombie caught the player
+          if (move.x === playerPos.x && move.y === playerPos.y) {
+            onGameOver();
+            return;
+          }
+          newZombiePositions.push(move);
+          moved = true;
+          break;
         }
-        newZombiePositions.push({ x: newX, y: newY });
-      } else {
-        // 이동할 수 없으면 제자리
+      }
+
+      // If no valid move found, stay in place
+      if (!moved) {
         newZombiePositions.push({ x: zombie.x, y: zombie.y });
       }
     });
 
-    // 새 좀비 위치를 미로에 표시
+    // Place zombies in their new positions
     newZombiePositions.forEach(zombie => {
       if (newMaze[zombie.y][zombie.x] === "player") {
         onGameOver();
