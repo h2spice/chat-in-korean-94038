@@ -217,13 +217,13 @@ const MazeGame = ({ level, onLevelComplete, onGameOver }: MazeGameProps) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [movePlayer]);
 
-  // 좀비가 주기적으로 움직임 (2초마다)
+  // Zombies move periodically (every 1 second)
   useEffect(() => {
     if (zombiePositions.length === 0) return;
 
     const zombieInterval = setInterval(() => {
       moveZombies();
-    }, 2000);
+    }, 1000);
 
     return () => clearInterval(zombieInterval);
   }, [zombiePositions.length, moveZombies]);
